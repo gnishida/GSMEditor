@@ -42,10 +42,10 @@ public:
 	static RoadVertexDesc getVertex(RoadGraph* roads, const QVector2D& pt, float angle, float angle_threshold, bool onlyValidVertex = true);
 	static bool getVertex(RoadGraph* roads, const QVector2D& pos, float threshold, RoadVertexDesc& desc, bool onlyValidVertex = true);
 	static bool getVertex(RoadGraph* roads, RoadVertexDesc v, float threshold, RoadVertexDesc& desc, bool onlyValidVertex = true);
-	static bool getVertex(RoadGraph* roads, QVector2D pos, float threshold, RoadVertexDesc ignore, RoadVertexDesc& desc, bool onlyValidVertex = true);
+	static bool getVertex(RoadGraph* roads, const QVector2D& pos, float threshold, RoadVertexDesc ignore, RoadVertexDesc& desc, bool onlyValidVertex = true);
 	static int getVertexIndex(RoadGraph* roads, RoadVertexDesc desc, bool onlyValidVertex = true);
 	static RoadVertexDesc addVertex(RoadGraph* roads, RoadVertexPtr v);
-	static void moveVertex(RoadGraph* roads, RoadVertexDesc v, QVector2D pt);
+	static void moveVertex(RoadGraph* roads, RoadVertexDesc v, const QVector2D& pt);
 	static int getDegree(RoadGraph* roads, RoadVertexDesc v, bool onlyValidEdge = true);
 	static std::vector<RoadVertexDesc> getVertices(RoadGraph* roads, bool onlyValidVertex = true);
 	static void removeIsolatedVertices(RoadGraph* roads, bool onlyValidVertex = true);
@@ -79,8 +79,8 @@ public:
 	static std::vector<QVector2D> finerEdge(RoadGraph* roads, RoadEdgeDesc e, float step = 1.0f);
 
 	// File I/O
-	static void loadRoads(RoadGraph* roads, QString filename, int roadType = 7);
-	static void saveRoads(RoadGraph* roads, QString filename);
+	static void loadRoads(RoadGraph* roads, const QString& filename, int roadType = 7);
+	static void saveRoads(RoadGraph* roads, const QString& filename);
 
 	// The entire graph related functions
 	static RoadGraph* copyRoads(RoadGraph* roads, int roadType = 7);
@@ -119,7 +119,7 @@ public:
 	static void rotate(RoadGraph* roads, float theta, const QVector2D& rotationCenter = QVector2D(0, 0));
 	static void translate(RoadGraph* roads, const QVector2D& offset);
 	static void scale(RoadGraph* roads, const BBox& bbox1, const BBox& bbox2);
-	static void distort(RoadGraph* roads, ArcArea* area);
+	static void distort(RoadGraph* roads, const ArcArea& area);
 	static RoadGraph* convertToGridNetwork(RoadGraph* roads, RoadVertexDesc start);
 	static RoadGraph* approximateToGridNetwork(RoadGraph* roads, float cellLength, QVector2D orig);
 	static void scaleToBBox(RoadGraph* roads, BBox& area);

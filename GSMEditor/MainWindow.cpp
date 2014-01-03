@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags) : QMainWindow(parent, 
 MainWindow::~MainWindow() {
 }
 
-void MainWindow::setStatusMessage(QString message1, QString message2) {
+void MainWindow::setStatusMessage(const QString& message1, const QString& message2) {
 	statusLebelL->setText(message1);
 	statusLabelR->setText(message2);
 }

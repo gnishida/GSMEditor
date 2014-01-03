@@ -43,7 +43,7 @@ public:
 	static void voronoi(RoadGraph* roads1, RoadGraph* roads2, VoronoiDiagram& vd);
 	static void merge(RoadGraph* roads1, RoadGraph* roads2);
 	static void merge2(RoadGraph* roads1, RoadGraph* roads2);
-	static void merge2(RoadGraph* roads1, RoadGraph* roads2, AbstractArea* area);
+	static void merge2(RoadGraph* roads1, RoadGraph* roads2, const AbstractArea& area);
 	static void merge3(RoadGraph* roads1, RoadGraph* roads2);
 	static void merge4(RoadGraph* roads1, RoadGraph* roads2);
 	static void merge5(RoadGraph* roads1, RoadGraph* roads2);

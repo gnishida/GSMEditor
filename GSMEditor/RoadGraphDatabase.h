@@ -20,7 +20,7 @@ public:
 	RoadGraphDatabase();
 	~RoadGraphDatabase();
 
-	void load(int type, QString filename);
+	void load(int type, const QString& filename);
 	void findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGraphDatabaseResult*>& results);
 
 private:

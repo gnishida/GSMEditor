@@ -240,7 +240,7 @@ void VoronoiUtil::merge2(RoadGraph* roads1, RoadGraph* roads2) {
 /**
  * roads2のエリアが"area"で与えられている時の、merge
  */
-void VoronoiUtil::merge2(RoadGraph* roads1, RoadGraph* roads2, AbstractArea* area) {
+void VoronoiUtil::merge2(RoadGraph* roads1, RoadGraph* roads2, const AbstractArea& area) {
 	// check if there is at least one vertex
 	if (GraphUtil::getNumVertices(roads1) == 0) return;
 	if (GraphUtil::getNumVertices(roads2) == 0) return;
@@ -272,7 +272,7 @@ void VoronoiUtil::merge2(RoadGraph* roads1, RoadGraph* roads2, AbstractArea* are
 	    std::size_t cell_index = it->source_index();
 		VoronoiVertex v = points[cell_index];
 
-		bool withinTerritory = isWithinTerritory(roads1, roads2, *area, v);
+		bool withinTerritory = isWithinTerritory(roads1, roads2, area, v);
 
 		// check if the neighbors are in the same road graph
 		bool adjacentToEnemy = false;
@@ -301,7 +301,7 @@ void VoronoiUtil::merge2(RoadGraph* roads1, RoadGraph* roads2, AbstractArea* are
 				RoadVertexDesc tgt = boost::target(*ei, v.roads->graph);
 				
 				// if both the vertices is outside the teritory, remove this edge
-				if (!isWithinTerritory(roads1, roads2, *area, VoronoiVertex(v.roads, tgt))) {
+				if (!isWithinTerritory(roads1, roads2, area, VoronoiVertex(v.roads, tgt))) {
 					v.roads->graph[*ei]->valid = false;
 					v.roads->graph[v.desc]->valid = false;
 					continue;

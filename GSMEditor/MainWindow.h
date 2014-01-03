@@ -31,7 +31,7 @@ public:
 	MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~MainWindow();
 
-	void setStatusMessage(QString message1, QString message2);
+	void setStatusMessage(const QString& message1, const QString& message2);
 
 protected:
 	void keyPressEvent(QKeyEvent* e);

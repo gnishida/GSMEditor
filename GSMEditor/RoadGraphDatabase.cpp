@@ -13,7 +13,7 @@ RoadGraphDatabase::~RoadGraphDatabase() {
 	clearTrees();
 }
 
-void RoadGraphDatabase::load(int type, QString filename) {
+void RoadGraphDatabase::load(int type, const QString& filename) {
 	this->type = type;
 
 	if (this->roads != NULL) delete this->roads;

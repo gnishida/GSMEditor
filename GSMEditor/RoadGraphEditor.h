@@ -10,36 +10,6 @@
 
 class MainWindow;
 
-/*
-class VoronoiVertex {
-public:
-	RoadGraph* roads;
-	RoadVertexDesc desc;
-
-public:
-	VoronoiVertex(RoadGraph* roads, RoadVertexDesc desc) {
-		this->roads = roads;
-		this->desc = desc;
-	}
-};
-
-namespace boost {
-namespace polygon {
-template <>
-struct geometry_concept<VoronoiVertex> { typedef point_concept type; };
-  
-template <>
-struct point_traits<VoronoiVertex> {
-	typedef int coordinate_type;
-   
-	static inline coordinate_type get(const VoronoiVertex& v, orientation_2d orient) {
-		return (orient == HORIZONTAL) ? v.roads->graph[v.desc]->pt.x() * 100 : v.roads->graph[v.desc]->pt.y() * 100;
-	}
-};
-}
-}
-*/
-
 class RoadGraphEditor {
 public:
 	static enum {
@@ -61,11 +31,6 @@ public:
 
 		MODE_DATABASE,
 		MODE_DATABASE_SKETCHING,
-		/*MODE_LAYER_SELECTED,
-		MODE_LAYER_MOVING,
-		MODE_LAYER_ROTATING,
-		MODE_LAYER_DISTORTING,
-		MODE_LAYER_SCALING,*/
 
 		MODE_SKETCH,
 		MODE_SKETCH_SKETCHING,
@@ -78,7 +43,7 @@ public:
 
 	int mode;
 
-	AbstractArea* selectedArea;				// the selected area
+	AbstractAreaPtr selectedArea;				// the selected area
 	RoadVertexPtr selectedVertex;
 	RoadVertexDesc selectedVertexDesc;
 	RoadEdgePtr selectedEdge;
@@ -105,9 +70,9 @@ public:
 
 	void clear();
 	void clearInterpolatedRoads();
-	void openRoad(QString filename);
-	void openToAddRoad(QString filename);
-	void saveRoad(QString filename);
+	void openRoad(const QString& filename);
+	void openToAddRoad(const QString& filename);
+	void saveRoad(const QString& filename);
 	void undo();
 	void cut();
 	void copy();
@@ -167,7 +132,7 @@ public:
 	void voronoi();
 	void voronoiMerge();
 	void voronoiMerge2();
-	void voronoiMerge2(AbstractArea* area);
+	void voronoiMerge2(const AbstractArea& area);
 	void voronoiMerge3();
 
 	// Simple connect

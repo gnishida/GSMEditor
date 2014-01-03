@@ -85,65 +85,59 @@ void GLWidget::drawScene() {
 }
 
 void GLWidget::showStatusMessage() {
-	QString strMode;
-
 	switch (editor->mode) {
 	case RoadGraphEditor::MODE_BASIC:
-		strMode = "MODE_BASIC";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC");
 		break;
 	case RoadGraphEditor::MODE_BASIC_VERTEX_SELECTED:
-		strMode = "MODE_BASIC_VERTEX_SELECTED";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_VERTEX_SELECTED");
 		break;
 	case RoadGraphEditor::MODE_BASIC_VERTEX_MOVING:
-		strMode = "MODE_BASIC_VERTEX_MOVING";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_VERTEX_MOVING");
 		break;
 	case RoadGraphEditor::MODE_BASIC_EDGE_SELECTED:
-		strMode = "MODE_BASIC_EDGE_SELECTED";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_EDGE_SELECTED");
 		break;
 	case RoadGraphEditor::MODE_BASIC_DEFINING_AREA:
-		strMode = "MODE_BASIC_DEFINING_AREA";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_DEFINING_AREA");
 		break;
 	case RoadGraphEditor::MODE_BASIC_AREA_SELECTED:
-		strMode = "MODE_BASIC_AREA_SELECTED";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_AREA_SELECTED");
 		break;
 	case RoadGraphEditor::MODE_BASIC_AREA_MOVING:
-		strMode = "MODE_BASIC_AREA_MOVING";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_AREA_MOVING");
 		break;
 	case RoadGraphEditor::MODE_BASIC_AREA_RESIZING_TL:
-		strMode = "MODE_BASIC_AREA_RESIZING_TL";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_AREA_RESIZING_TL");
 		break;
 	case RoadGraphEditor::MODE_BASIC_AREA_RESIZING_TR:
-		strMode = "MODE_BASIC_AREA_RESIZING_TR";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_AREA_RESIZING_TR");
 		break;
 	case RoadGraphEditor::MODE_BASIC_AREA_RESIZING_BL:
-		strMode = "MODE_BASIC_AREA_RESIZING_BL";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_AREA_RESIZING_BL");
 		break;
 	case RoadGraphEditor::MODE_BASIC_AREA_RESIZING_BR:
-		strMode = "MODE_BASIC_AREA_RESIZING_BR";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_AREA_RESIZING_BR");
 		break;
 	case RoadGraphEditor::MODE_BASIC_AREA_DISTORTING_TL:
-		strMode = "MODE_BASIC_AREA_DISTORTING_TL";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_AREA_DISTORTING_TL");
 		break;
 	case RoadGraphEditor::MODE_BASIC_AREA_DISTORTING_TR:
-		strMode = "MODE_BASIC_AREA_DISTORTING_TR";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_AREA_DISTORTING_TR");
 		break;
 	case RoadGraphEditor::MODE_BASIC_AREA_DISTORTING_BL:
-		strMode = "MODE_BASIC_AREA_DISTORTING_BL";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_AREA_DISTORTING_BL");
 		break;
 	case RoadGraphEditor::MODE_BASIC_AREA_DISTORTING_BR:
-		strMode = "MODE_BASIC_AREA_DISTORTING_BR";
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), "MODE_BASIC_AREA_DISTORTING_BR");
 		break;
 	case RoadGraphEditor::MODE_SKETCH:
-		strMode = QString("MODE_SKETCH (%1)").arg(city_id);
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), QString("MODE_SKETCH (%1)").arg(city_id));
 		break;
 	case RoadGraphEditor::MODE_SKETCH_SKETCHING:
-		strMode = QString("MODE_SKETCHING (%1)").arg(city_id);
+		mainWin->setStatusMessage(QString("Z: %1").arg(camera->dz), QString("MODE_SKETCHING (%1)").arg(city_id));
 		break;
 	}
-
-	QString strZ = QString("Z: %1").arg(camera->dz);
-
-	mainWin->setStatusMessage(strZ, strMode);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////

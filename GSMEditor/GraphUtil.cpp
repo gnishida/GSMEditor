@@ -185,7 +185,7 @@ bool GraphUtil::getVertex(RoadGraph* roads, RoadVertexDesc v, float threshold, R
  * Find the closest vertex from the specified point. 
  * If the closet vertex is within the threshold, return true. Otherwise, return false.
  */
-bool GraphUtil::getVertex(RoadGraph* roads, QVector2D pos, float threshold, RoadVertexDesc ignore, RoadVertexDesc& desc, bool onlyValidVertex) {
+bool GraphUtil::getVertex(RoadGraph* roads, const QVector2D& pos, float threshold, RoadVertexDesc ignore, RoadVertexDesc& desc, bool onlyValidVertex) {
 	float min_dist = std::numeric_limits<float>::max();
 
 	RoadVertexIter vi, vend;
@@ -238,7 +238,7 @@ RoadVertexDesc GraphUtil::addVertex(RoadGraph* roads, RoadVertexPtr v) {
  * Move the vertex to the specified location.
  * The outing edges are also moved accordingly.
  */
-void GraphUtil::moveVertex(RoadGraph* roads, RoadVertexDesc v, QVector2D pt) {
+void GraphUtil::moveVertex(RoadGraph* roads, RoadVertexDesc v, const QVector2D& pt) {
 	// Move the outing edges
 	RoadOutEdgeIter ei, eend;
 	for (boost::tie(ei, eend) = boost::out_edges(v, roads->graph); ei != eend; ++ei) {
@@ -941,7 +941,7 @@ std::vector<QVector2D> GraphUtil::finerEdge(RoadGraph* roads, RoadEdgeDesc e, fl
 /**
  * Load the road from a file.
  */
-void GraphUtil::loadRoads(RoadGraph* roads, QString filename, int roadType) {
+void GraphUtil::loadRoads(RoadGraph* roads, const QString& filename, int roadType) {
 	roads->clear();
 
 	FILE* fp = fopen(filename.toUtf8().data(), "rb");
@@ -1013,7 +1013,7 @@ void GraphUtil::loadRoads(RoadGraph* roads, QString filename, int roadType) {
 /**
  * Save the road to a file.
  */
-void GraphUtil::saveRoads(RoadGraph* roads, QString filename) {
+void GraphUtil::saveRoads(RoadGraph* roads, const QString& filename) {
 	RoadGraph* temp = copyRoads(roads);
 	clean(temp);
 
@@ -2406,17 +2406,17 @@ void GraphUtil::scale(RoadGraph* roads, const BBox& bbox1, const BBox& bbox2) {
 /**
  * Distort the road graph
  */
-void GraphUtil::distort(RoadGraph* roads, ArcArea* area) {
+void GraphUtil::distort(RoadGraph* roads, const ArcArea& area) {
 	// distort the roads
 	RoadVertexIter vi, vend;
 	for (boost::tie(vi, vend) = boost::vertices(roads->graph); vi != vend; ++vi) {
-		roads->graph[*vi]->pt = area->deform(roads->graph[*vi]->pt);
+		roads->graph[*vi]->pt = area.deform(roads->graph[*vi]->pt);
 	}
 	
 	RoadEdgeIter ei, eend;
 	for (boost::tie(ei, eend) = boost::edges(roads->graph); ei != eend; ++ei) {
 		for (int i = 0; i < roads->graph[*ei]->polyLine.size(); i++) {
-			roads->graph[*ei]->polyLine[i] = area->deform(roads->graph[*ei]->polyLine[i]);
+			roads->graph[*ei]->polyLine[i] = area.deform(roads->graph[*ei]->polyLine[i]);
 		}
 	}
 
