@@ -24,4 +24,3 @@ public:
 	bool hitTestResizingPoint(const QVector2D& pt) const;
 	std::vector<QVector2D> polyline() const;
 };
-

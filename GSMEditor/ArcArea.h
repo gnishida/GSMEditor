@@ -25,4 +25,3 @@ public:
 	std::vector<QVector2D> polyline() const;
 	QVector2D deform(const QVector2D& pt) const;
 };
-

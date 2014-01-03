@@ -3,8 +3,7 @@
 #include "RoadVertex.h"
 #include "RoadEdge.h"
 #include "Renderable.h"
-#include <stdio.h>
-#include <qvector2d.h>
+#include <QVector2D>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/properties.hpp>
 #include <boost/graph/graph_traits.hpp>

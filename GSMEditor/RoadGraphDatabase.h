@@ -2,7 +2,7 @@
 
 #include "RoadGraph.h"
 #include "BFSTree.h"
-#include "ShadowRoadGraph.h"
+#include "RoadGraphDatabaseResult.h"
 #include <QMap>
 #include <QList>
 
@@ -21,7 +21,7 @@ public:
 	~RoadGraphDatabase();
 
 	void load(int type, QString filename);
-	void findSimilarRoads(RoadGraph* roads1, int N, QList<ShadowRoadGraph*>& results);
+	void findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGraphDatabaseResult*>& results);
 
 private:
 	void createTrees(RoadGraph* roads);

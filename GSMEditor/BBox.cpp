@@ -11,6 +11,13 @@ BBox::BBox() {
 BBox::~BBox() {
 }
 
+BBox::BBox(const QVector2D& pt) {
+	minPt.setX(pt.x());
+	minPt.setY(pt.y());
+	maxPt.setX(pt.x());
+	maxPt.setY(pt.y());
+}
+
 /**
  * update the bounding box by combining aother bounding box.
  *
@@ -77,12 +84,16 @@ std::vector<QVector2D> BBox::polyline() const {
 }
 
 bool BBox::hitTest(const QVector2D& pt) const {
+	/*
 	if (pt.x() < minPt.x() - dx() * 0.1f) return false;
 	if (pt.y() < minPt.y() - dy() * 0.1f) return false;
 	if (pt.x() > maxPt.x() + dx() * 0.1f) return false;
 	if (pt.y() > maxPt.y() + dy() * 0.1f) return false;
 
 	return true;
+	*/
+
+	return contains(pt);
 }
 
 bool BBox::contains(const QVector2D &pt) const {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <qvector3d.h>
-#include <qvector2d.h>
+#include <QVector3D>
+#include <QVector2D>
 
 class Util {
 	static const float MTC_FLOAT_TOL;

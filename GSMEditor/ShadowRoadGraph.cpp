@@ -12,8 +12,8 @@ ShadowRoadGraph::ShadowRoadGraph(RoadGraph* roads, RoadGraph* roadsOrig, int typ
 	this->translation = translation;
 
 	// translation and rotation
-	GraphUtil::rotate(roads, -rotation, center);
-	GraphUtil::translate(roads, translation);
+	//GraphUtil::rotate(roads, -rotation, center);
+	//GraphUtil::translate(roads, translation);
 }
 
 ShadowRoadGraph::~ShadowRoadGraph() {

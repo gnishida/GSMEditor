@@ -5,9 +5,10 @@
 #include "BBox.h"
 #include "ClipBoard.h"
 #include "RoadGraphDatabase.h"
-#include "ShadowRoadGraph.h"
 #include "VoronoiDiagram.h"
 #include <boost/polygon/voronoi.hpp>
+
+class MainWindow;
 
 /*
 class VoronoiVertex {
@@ -58,18 +59,20 @@ public:
 		MODE_BASIC_AREA_DISTORTING_BL,
 		MODE_BASIC_AREA_DISTORTING_BR,
 
-		MODE_LAYER,
-		MODE_LAYER_SELECTED,
+		MODE_DATABASE,
+		MODE_DATABASE_SKETCHING,
+		/*MODE_LAYER_SELECTED,
 		MODE_LAYER_MOVING,
 		MODE_LAYER_ROTATING,
 		MODE_LAYER_DISTORTING,
-		MODE_LAYER_SCALING,
+		MODE_LAYER_SCALING,*/
 
 		MODE_SKETCH,
 		MODE_SKETCH_SKETCHING,
 	};
 
 public:
+	MainWindow* mainWin;
 	RoadGraph* roads;
 	RoadGraph* roadsOrig;
 
@@ -88,7 +91,7 @@ public:
 	Sketch sketch;
 	std::vector<RoadGraphDatabase*> largeRoadDB;
 	std::vector<RoadGraphDatabase*> smallRoadDB;
-	QList<ShadowRoadGraph*> shadowRoads;
+	QList<RoadGraphDatabaseResult*> shadowRoads;
 
 	VoronoiDiagram voronoiDiagram;
 
@@ -97,7 +100,7 @@ public:
 	std::vector<RoadGraph*> history;
 
 public:
-	RoadGraphEditor();
+	RoadGraphEditor(MainWindow* mainWin);
 	~RoadGraphEditor();
 
 	void clear();
@@ -158,6 +161,7 @@ public:
 	void sketching(const QVector2D& pt);
 	void stopSketching(int type, int subtype, float simplify_threshold, float snap_threshold);
 	void instantiateShadowRoads();
+	void selectRoads(RoadGraph* new_roads);
 
 	// Voronoi
 	void voronoi();

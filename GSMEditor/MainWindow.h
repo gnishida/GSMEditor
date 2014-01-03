@@ -5,14 +5,25 @@
 #include "ui_MainWindow.h"
 #include "ControlWidget.h"
 #include "GLWidget.h"
+#include "RoadBoxList.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
 
 public:
 	Ui::MainWindow ui;
-	ControlWidget* controlWidget;
 	GLWidget* glWidget;
+
+	/** Control widget */
+	ControlWidget* controlWidget;
+
+	/** Road database box */
+	RoadBoxList* largeRoadBoxList;
+	QDockWidget *dockLargeRoadBoxList;
+	RoadBoxList* smallRoadBoxList;
+	QDockWidget *dockSmallRoadBoxList;
+
+	/** Status bar */
 	QLabel* statusLebelL;
 	QLabel* statusLabelR;
 
@@ -34,7 +45,7 @@ public slots:
 	void onOpenToAdd();
 	void onSave();
 	void onModeBasic();
-	void onModeLayer();
+	void onModeDatabase();
 	void onModeSketch();
 	void onSelectAll();
 	void onUndo();
@@ -46,6 +57,7 @@ public slots:
 	void onVoronoiCut();
 	void onShowArea();
 	void onShowControlWidget();
+	void onLargeRoadDatabase();
 };
 
 #endif // MAINWINDOW_H

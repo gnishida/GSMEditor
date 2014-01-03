@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>847</width>
-    <height>688</height>
+    <width>1204</width>
+    <height>830</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>847</width>
+     <width>1204</width>
      <height>21</height>
     </rect>
    </property>
@@ -40,7 +40,7 @@
      <string>Mode</string>
     </property>
     <addaction name="actionModeBasic"/>
-    <addaction name="actionModeLayer"/>
+    <addaction name="actionModeDatabase"/>
     <addaction name="actionModeSketch"/>
    </widget>
    <widget class="QMenu" name="menuSelect">
@@ -72,6 +72,7 @@
      <string>Window</string>
     </property>
     <addaction name="actionControlWidget"/>
+    <addaction name="actionLargeRoadDatabase"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuMode"/>
@@ -127,16 +128,25 @@
    </property>
   </action>
   <action name="actionModeBasic">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Basic</string>
    </property>
   </action>
-  <action name="actionModeLayer">
+  <action name="actionModeDatabase">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Graph</string>
+    <string>Database</string>
    </property>
   </action>
   <action name="actionModeSketch">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Sketch</string>
    </property>
@@ -204,6 +214,11 @@
   <action name="actionControlWidget">
    <property name="text">
     <string>Control Widget</string>
+   </property>
+  </action>
+  <action name="actionLargeRoadDatabase">
+   <property name="text">
+    <string>Large Road Database</string>
    </property>
   </action>
  </widget>

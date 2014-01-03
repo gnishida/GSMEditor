@@ -2,6 +2,7 @@
 
 #include <QVector2D>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 class AbstractArea {
 public:
@@ -28,5 +29,4 @@ public:
 	virtual bool hitTestResizingPoint(const QVector2D& pt) const = 0;
 	virtual std::vector<QVector2D> polyline() const = 0;
 };
-
 

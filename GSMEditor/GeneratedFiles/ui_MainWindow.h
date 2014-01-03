@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'MainWindow.ui'
 **
-** Created: Thu Jan 2 23:28:46 2014
+** Created: Fri Jan 3 13:00:05 2014
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -33,7 +33,7 @@ public:
     QAction *actionSave;
     QAction *actionExit;
     QAction *actionModeBasic;
-    QAction *actionModeLayer;
+    QAction *actionModeDatabase;
     QAction *actionModeSketch;
     QAction *actionSelectAll;
     QAction *actionUndo;
@@ -44,6 +44,7 @@ public:
     QAction *actionVoronoi;
     QAction *actionShowArea;
     QAction *actionControlWidget;
+    QAction *actionLargeRoadDatabase;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
@@ -59,7 +60,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(847, 688);
+        MainWindow->resize(1204, 830);
         actionNew = new QAction(MainWindow);
         actionNew->setObjectName(QString::fromUtf8("actionNew"));
         QIcon icon;
@@ -81,10 +82,13 @@ public:
         actionExit->setObjectName(QString::fromUtf8("actionExit"));
         actionModeBasic = new QAction(MainWindow);
         actionModeBasic->setObjectName(QString::fromUtf8("actionModeBasic"));
-        actionModeLayer = new QAction(MainWindow);
-        actionModeLayer->setObjectName(QString::fromUtf8("actionModeLayer"));
+        actionModeBasic->setCheckable(true);
+        actionModeDatabase = new QAction(MainWindow);
+        actionModeDatabase->setObjectName(QString::fromUtf8("actionModeDatabase"));
+        actionModeDatabase->setCheckable(true);
         actionModeSketch = new QAction(MainWindow);
         actionModeSketch->setObjectName(QString::fromUtf8("actionModeSketch"));
+        actionModeSketch->setCheckable(true);
         actionSelectAll = new QAction(MainWindow);
         actionSelectAll->setObjectName(QString::fromUtf8("actionSelectAll"));
         actionUndo = new QAction(MainWindow);
@@ -118,12 +122,14 @@ public:
         actionShowArea->setObjectName(QString::fromUtf8("actionShowArea"));
         actionControlWidget = new QAction(MainWindow);
         actionControlWidget->setObjectName(QString::fromUtf8("actionControlWidget"));
+        actionLargeRoadDatabase = new QAction(MainWindow);
+        actionLargeRoadDatabase->setObjectName(QString::fromUtf8("actionLargeRoadDatabase"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 847, 21));
+        menuBar->setGeometry(QRect(0, 0, 1204, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuMode = new QMenu(menuBar);
@@ -158,7 +164,7 @@ public:
         menuFile->addSeparator();
         menuFile->addAction(actionExit);
         menuMode->addAction(actionModeBasic);
-        menuMode->addAction(actionModeLayer);
+        menuMode->addAction(actionModeDatabase);
         menuMode->addAction(actionModeSketch);
         menuSelect->addAction(actionSelectAll);
         menuEdit->addAction(actionUndo);
@@ -170,6 +176,7 @@ public:
         menuTool->addAction(actionVoronoi);
         menuTool->addAction(actionShowArea);
         menuWindow->addAction(actionControlWidget);
+        menuWindow->addAction(actionLargeRoadDatabase);
 
         retranslateUi(MainWindow);
 
@@ -185,7 +192,7 @@ public:
         actionSave->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
         actionExit->setText(QApplication::translate("MainWindow", "Exit", 0, QApplication::UnicodeUTF8));
         actionModeBasic->setText(QApplication::translate("MainWindow", "Basic", 0, QApplication::UnicodeUTF8));
-        actionModeLayer->setText(QApplication::translate("MainWindow", "Graph", 0, QApplication::UnicodeUTF8));
+        actionModeDatabase->setText(QApplication::translate("MainWindow", "Database", 0, QApplication::UnicodeUTF8));
         actionModeSketch->setText(QApplication::translate("MainWindow", "Sketch", 0, QApplication::UnicodeUTF8));
         actionSelectAll->setText(QApplication::translate("MainWindow", "Select All", 0, QApplication::UnicodeUTF8));
         actionUndo->setText(QApplication::translate("MainWindow", "Undo", 0, QApplication::UnicodeUTF8));
@@ -196,6 +203,7 @@ public:
         actionVoronoi->setText(QApplication::translate("MainWindow", "Voronoi", 0, QApplication::UnicodeUTF8));
         actionShowArea->setText(QApplication::translate("MainWindow", "Show Area", 0, QApplication::UnicodeUTF8));
         actionControlWidget->setText(QApplication::translate("MainWindow", "Control Widget", 0, QApplication::UnicodeUTF8));
+        actionLargeRoadDatabase->setText(QApplication::translate("MainWindow", "Large Road Database", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuMode->setTitle(QApplication::translate("MainWindow", "Mode", 0, QApplication::UnicodeUTF8));
         menuSelect->setTitle(QApplication::translate("MainWindow", "Select", 0, QApplication::UnicodeUTF8));

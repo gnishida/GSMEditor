@@ -3,6 +3,7 @@
 #include "AbstractArea.h"
 #include <QVector2D>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 class BBox : public AbstractArea {
 public:
@@ -11,6 +12,7 @@ public:
 
 public:
 	BBox();
+	BBox(const QVector2D& pt);
 	~BBox();
 
 	inline BBox(const BBox &ref) {	
@@ -65,3 +67,4 @@ public:
 	bool contains(const QVector2D &pt) const;
 };
 
+typedef boost::shared_ptr<BBox> BBoxPtr;

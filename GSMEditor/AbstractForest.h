@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RoadGraph.h"
-#include <qmap.h>
+#include <QMap>
 #include <vector>
 
 class AbstractForest {

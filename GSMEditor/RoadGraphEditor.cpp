@@ -1,4 +1,5 @@
 ﻿#include "RoadGraphEditor.h"
+#include "MainWindow.h"
 #include "GraphUtil.h"
 #include "Util.h"
 #include "BFSTree.h"
@@ -7,7 +8,8 @@
 #include "VoronoiUtil.h"
 #include <boost/polygon/voronoi.hpp>
 
-RoadGraphEditor::RoadGraphEditor() {
+RoadGraphEditor::RoadGraphEditor(MainWindow* mainWin) {
+	this->mainWin = mainWin;
 	roads = new RoadGraph();
 	roadsOrig = new RoadGraph();
 	selectedRoads = new RoadGraph();
@@ -154,10 +156,12 @@ void RoadGraphEditor::paste() {
 	GraphUtil::copyRoads(selectedRoadsOrig, selectedRoads);
 
 	// inflate the bbox a little so that all the vertices are completely within the bbox.
+	/*
 	((BBox*)selectedArea)->minPt.setX(((BBox*)selectedArea)->minPt.x() - selectedArea->dx() * 0.1f);
 	((BBox*)selectedArea)->minPt.setY(((BBox*)selectedArea)->minPt.y() - selectedArea->dy() * 0.1f);
 	((BBox*)selectedArea)->maxPt.setX(((BBox*)selectedArea)->maxPt.x() + selectedArea->dx() * 0.1f);
 	((BBox*)selectedArea)->maxPt.setY(((BBox*)selectedArea)->maxPt.y() + selectedArea->dy() * 0.1f);
+	*/
 
 	mode = MODE_BASIC_AREA_SELECTED;
 }
@@ -207,8 +211,7 @@ void RoadGraphEditor::selectAll() {
  */
 void RoadGraphEditor::startDefiningArea(const QVector2D& pt) {
 	if (selectedArea != NULL) delete selectedArea;
-	selectedArea = new BBox();
-	((BBox*)selectedArea)->addPoint(pt);
+	selectedArea = new BBox(pt);
 
 	mode = MODE_BASIC_DEFINING_AREA;
 }
@@ -237,7 +240,7 @@ void RoadGraphEditor::stopDefiningArea() {
 	}
 
 	// if the box is just a single point, cancel the selection.
-	if (((BBox*)selectedArea)->maxPt.x() == ((BBox*)selectedArea)->minPt.x() && ((BBox*)selectedArea)->maxPt.y() == ((BBox*)selectedArea)->minPt.y()) {
+	if (selectedArea->dx() == 0.0f && selectedArea->dy() == 0.0f) {
 		mode = MODE_BASIC;
 	} else {
 		history.push_back(GraphUtil::copyRoads(roads));
@@ -469,6 +472,10 @@ void RoadGraphEditor::unselectRoads() {
 	selectedRoads->clear();
 	selectedRoadsOrig->clear();
 
+	// clear the area
+	if (selectedArea != NULL) delete selectedArea;
+	selectedArea = NULL;
+
 	mode = MODE_BASIC;
 }
 
@@ -589,7 +596,11 @@ bool RoadGraphEditor::splitEdge(const QVector2D& pt) {
 void RoadGraphEditor::startSketching(const QVector2D& pt, float snap_threshold) {
 	sketch.startLine(pt, snap_threshold);
 
-	mode = MODE_SKETCH_SKETCHING;
+	if (mode == MODE_SKETCH) {
+		mode = MODE_SKETCH_SKETCHING;
+	} else {
+		mode = MODE_DATABASE_SKETCHING;
+	}
 }
 
 /**
@@ -605,13 +616,29 @@ void RoadGraphEditor::sketching(const QVector2D& pt) {
 void RoadGraphEditor::stopSketching(int type, int subtype, float simplify_threshold, float snap_threshold) {
 	sketch.finalizeLine(simplify_threshold, snap_threshold);
 
-	if (type == RoadGraphDatabase::TYPE_LARGE) {
-		largeRoadDB[subtype]->findSimilarRoads(&sketch, 1, shadowRoads);
-	} else {
-		smallRoadDB[subtype]->findSimilarRoads(&sketch, 1, shadowRoads);
-	}
+	if (mode == MODE_SKETCH_SKETCHING) {
+		// clear the shadow roads
+		for (int i = 0; i < shadowRoads.size(); i++) {
+			delete shadowRoads[i];
+		}
+		shadowRoads.clear();
 
-	mode = MODE_SKETCH;
+		QList<RoadGraphDatabaseResult*> results;
+		if (type == RoadGraphDatabase::TYPE_LARGE) {
+			largeRoadDB[subtype]->findSimilarRoads(&sketch, 1, shadowRoads);
+		} else {
+			smallRoadDB[subtype]->findSimilarRoads(&sketch, 1, shadowRoads);
+		}
+
+		mode = MODE_SKETCH;
+	} else {
+		for (int i = 0; i < mainWin->largeRoadBoxList->references.size(); i++) {
+			qDebug() << i;
+			mainWin->largeRoadBoxList->references[i]->view->showSimilarity(&sketch);
+		}
+
+		mode = MODE_DATABASE;
+	}
 }
 
 /**
@@ -619,7 +646,24 @@ void RoadGraphEditor::stopSketching(int type, int subtype, float simplify_thresh
  */
 void RoadGraphEditor::instantiateShadowRoads() {
 	if (selectedRoads) delete selectedRoads;
-	selectedRoads = shadowRoads[0]->instantiateRoads();
+
+	selectRoads(shadowRoads[0]->instantiateRoads());
+
+	// clear the shadow roads
+	for (int i = 0; i < shadowRoads.size(); i++) {
+		delete shadowRoads[i];
+	}
+	shadowRoads.clear();
+
+	// clear the sketch
+	sketch.clear();
+}
+
+/**
+ * 道路を選択する
+ */
+void RoadGraphEditor::selectRoads(RoadGraph* new_roads) {
+	selectedRoads = new_roads;
 
 	if (selectedArea != NULL) {
 		delete selectedArea;
@@ -627,15 +671,6 @@ void RoadGraphEditor::instantiateShadowRoads() {
 	//selectedArea = new CircleArea(shadowRoads[0]->center, 1000.0f);
 	selectedArea = new BBox(GraphUtil::getAABoundingBox(selectedRoads));
 	//GraphUtil::extractRoads2(selectedRoads, *selectedArea);
-	
-	// clear the sketch
-	sketch.clear();
-
-	// clear the shadow roads
-	for (int i = 0; i < shadowRoads.size(); i++) {
-		delete shadowRoads[i];
-	}
-	shadowRoads.clear();
 
 	// backup the road graph
 	GraphUtil::copyRoads(roads, roadsOrig);

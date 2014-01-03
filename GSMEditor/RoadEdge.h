@@ -1,6 +1,6 @@
 #pragma once
 
-#include <qvector3d.h>
+#include <QVector2D>
 #include <vector>
 #include <boost/shared_ptr.hpp>
 

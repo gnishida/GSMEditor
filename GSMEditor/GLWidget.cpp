@@ -11,8 +11,7 @@ float GLWidget::MAX_Z = 11520.0f;
 GLWidget::GLWidget(MainWindow* mainWin) : QGLWidget(QGLFormat(QGL::SampleBuffers), (QWidget*)mainWin) {
 	this->mainWin = mainWin;
 
-	//roads = new RoadGraph();
-	editor = new RoadGraphEditor();
+	editor = new RoadGraphEditor(mainWin);
 	renderer = new RoadGraphRenderer();
 
 	// set up the camera
@@ -225,6 +224,8 @@ void GLWidget::mousePressEvent(QMouseEvent *e) {
 
 		if (editor->mode == RoadGraphEditor::MODE_SKETCH) {
 			editor->startSketching(last2DPos, camera->dz * 0.01f);
+		} else if (editor->mode == RoadGraphEditor::MODE_DATABASE) {
+			editor->startSketching(last2DPos, camera->dz * 0.01f);
 		} else if (editor->mode == RoadGraphEditor::MODE_BASIC_AREA_SELECTED) {
 			/*if (editor->selectedArea->hitTestResizingPoint(last2DPos)) {
 				editor->startResizingArea(RoadGraphEditor::MODE_BASIC_AREA_RESIZING_BR);
@@ -255,6 +256,8 @@ void GLWidget::mousePressEvent(QMouseEvent *e) {
 	}
 
 	showStatusMessage();
+
+	updateGL();
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent *e) {
@@ -265,6 +268,13 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *e) {
 
 	switch (editor->mode) {
 	case RoadGraphEditor::MODE_SKETCH_SKETCHING:
+		editor->stopSketching(
+			(camera->dz > 2000.0f) ? RoadGraphDatabase::TYPE_LARGE : RoadGraphDatabase::TYPE_SMALL, 
+			city_id,
+			camera->dz * 0.002f,
+			camera->dz * 0.01f);
+		break;
+	case RoadGraphEditor::MODE_DATABASE_SKETCHING:
 		editor->stopSketching(
 			(camera->dz > 2000.0f) ? RoadGraphDatabase::TYPE_LARGE : RoadGraphDatabase::TYPE_SMALL, 
 			city_id,
@@ -324,6 +334,9 @@ void GLWidget::mouseMoveEvent(QMouseEvent *e) {
 	if (e->buttons() & Qt::LeftButton) {
 		switch (editor->mode) {
 		case RoadGraphEditor::MODE_SKETCH_SKETCHING:
+			editor->sketching(pos);
+			break;
+		case RoadGraphEditor::MODE_DATABASE_SKETCHING:
 			editor->sketching(pos);
 			break;
 		case RoadGraphEditor::MODE_BASIC_AREA_MOVING:
