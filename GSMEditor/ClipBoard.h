@@ -5,7 +5,8 @@
 
 class ClipBoard {
 public:
-	RoadGraph* roads;
+	bool isEmpty;
+	RoadGraph roads;
 
 public:
 	ClipBoard();

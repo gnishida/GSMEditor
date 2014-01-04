@@ -2,38 +2,33 @@
 #include "GraphUtil.h"
 
 ClipBoard::ClipBoard() {
-	roads = NULL;
+	isEmpty = false;
 }
 
 ClipBoard::~ClipBoard() {
 }
 
 void ClipBoard::clear() {
-	if (roads != NULL) {
-		delete roads;
-	}
+	roads.clear();
 
-	roads = NULL;
+	isEmpty = true;
 }
 
 bool ClipBoard::empty() const {
-	return (roads == NULL) ? true : false;
+	return isEmpty;
 }
 
 void ClipBoard::copy(RoadGraph* roads) {
-	clear();
-
-	this->roads = GraphUtil::copyRoads(roads);
+	GraphUtil::copyRoads(roads, &this->roads);
 }
 
 void ClipBoard::copy(RoadGraph* roads, const AbstractArea& area) {
-	clear();
+	GraphUtil::copyRoads(roads, &this->roads);
 
-	this->roads = GraphUtil::copyRoads(roads);
-	GraphUtil::extractRoads(this->roads, area, true);
-	GraphUtil::clean(this->roads);
+	GraphUtil::extractRoads(&this->roads, area, true);
+	GraphUtil::clean(&this->roads);
 }
 
 RoadGraph* ClipBoard::paste() {
-	return GraphUtil::copyRoads(roads);
+	return GraphUtil::copyRoads(&roads);
 }

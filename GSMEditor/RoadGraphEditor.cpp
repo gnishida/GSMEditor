@@ -32,6 +32,8 @@ RoadGraphEditor::RoadGraphEditor(MainWindow* mainWin) {
 	}
 
 	clear();
+
+	mode = MODE_BASIC;
 }
 
 RoadGraphEditor::~RoadGraphEditor() {
@@ -44,7 +46,33 @@ RoadGraphEditor::~RoadGraphEditor() {
 void RoadGraphEditor::clear() {
 	roads->clear();
 
-	mode = MODE_BASIC;
+	switch (mode) {
+	case MODE_BASIC:
+	case MODE_BASIC_VERTEX_SELECTED:
+	case MODE_BASIC_VERTEX_MOVING:
+	case MODE_BASIC_EDGE_SELECTED:
+	case MODE_BASIC_DEFINING_AREA:
+	case MODE_BASIC_AREA_SELECTED:
+	case MODE_BASIC_AREA_MOVING:
+	case MODE_BASIC_AREA_RESIZING_TL:
+	case MODE_BASIC_AREA_RESIZING_TR:
+	case MODE_BASIC_AREA_RESIZING_BL:
+	case MODE_BASIC_AREA_RESIZING_BR:
+	case MODE_BASIC_AREA_DISTORTING_TL:
+	case MODE_BASIC_AREA_DISTORTING_TR:
+	case MODE_BASIC_AREA_DISTORTING_BL:
+	case MODE_BASIC_AREA_DISTORTING_BR:
+		mode = MODE_BASIC;
+		break;
+	case MODE_DATABASE:
+	case MODE_DATABASE_SKETCHING:
+		mode = MODE_DATABASE;
+		break;
+	case MODE_SKETCH:
+	case MODE_SKETCH_SKETCHING:
+		mode = MODE_SKETCH;
+		break;
+	}
 
 	selectedVertex = NULL;
 	selectedEdge = NULL;
@@ -115,14 +143,17 @@ void RoadGraphEditor::cut() {
 
 	history.push_back(GraphUtil::copyRoads(roads));
 
-	// extract the roads within the area, and put it into the clipboard.
-	clipBoard.copy(roads, *selectedArea);
-
-	GraphUtil::subtractRoads2(roads, *selectedArea);
+	// copy the selected roads to the clipboard
+	clipBoard.copy(selectedRoads);
 
 	// clear the selected roads
 	selectedRoads->clear();
 	selectedRoadsOrig->clear();
+
+	// clear the area
+	selectedArea = AbstractAreaPtr();
+
+	mode = MODE_BASIC;
 }
 
 void RoadGraphEditor::copy() {
@@ -313,6 +344,7 @@ void RoadGraphEditor::moveArea(float dx, float dy) {
 	GraphUtil::clean(selectedRoads);
 
 	VoronoiUtil::merge5(roads, selectedRoads);
+	//VoronoiUtil::merge5(roads, selectedRoads, *selectedArea);
 }
 
 /**
@@ -588,12 +620,12 @@ void RoadGraphEditor::stopSketching(int type, int subtype, float simplify_thresh
 
 	if (mode == MODE_SKETCH_SKETCHING) {
 		// clear the shadow roads
-		for (int i = 0; i < shadowRoads.size(); i++) {
+		/*for (int i = 0; i < shadowRoads.size(); i++) {
 			delete shadowRoads[i];
-		}
+		}*/
 		shadowRoads.clear();
 
-		QList<RoadGraphDatabaseResult*> results;
+		QList<RoadGraphDatabaseResultPtr> results;
 		if (type == RoadGraphDatabase::TYPE_LARGE) {
 			largeRoadDB[subtype]->findSimilarRoads(&sketch, 1, shadowRoads);
 		} else {
@@ -620,9 +652,9 @@ void RoadGraphEditor::instantiateShadowRoads() {
 	selectRoads(shadowRoads[0]->instantiateRoads());
 
 	// clear the shadow roads
-	for (int i = 0; i < shadowRoads.size(); i++) {
+	/*for (int i = 0; i < shadowRoads.size(); i++) {
 		delete shadowRoads[i];
-	}
+	}*/
 	shadowRoads.clear();
 
 	// clear the sketch

@@ -56,7 +56,7 @@ public:
 	Sketch sketch;
 	std::vector<RoadGraphDatabase*> largeRoadDB;
 	std::vector<RoadGraphDatabase*> smallRoadDB;
-	QList<RoadGraphDatabaseResult*> shadowRoads;
+	QList<RoadGraphDatabaseResultPtr> shadowRoads;
 
 	VoronoiDiagram voronoiDiagram;
 

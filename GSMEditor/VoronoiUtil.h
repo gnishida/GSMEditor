@@ -47,11 +47,13 @@ public:
 	static void merge3(RoadGraph* roads1, RoadGraph* roads2);
 	static void merge4(RoadGraph* roads1, RoadGraph* roads2);
 	static void merge5(RoadGraph* roads1, RoadGraph* roads2);
+	static void merge5(RoadGraph* roads1, RoadGraph* roads2, const AbstractArea& area);
 
 	static bool isWithinTerritory(RoadGraph* roads1, const QVector2D& center1, RoadGraph* roads2, const QVector2D& center2, const VoronoiVertex& v);
 	static bool isWithinTerritory(RoadGraph* roads1, RoadGraph* roads2, const AbstractArea& area2, const VoronoiVertex& v);
 
 	static void invalidateObstacleEdges(const boost::polygon::voronoi_diagram<double>::cell_type& cell, const QVector2D& dir, std::vector<VoronoiVertex>& points, float threshold);
 	static void invalidateObstacleEdges(RoadGraph* roads1, const QVector2D& center1, RoadGraph* roads2, const QVector2D& center2);
+	static void invalidateObstacleEdges(RoadGraph* roads1, RoadGraph* roads2, const AbstractArea& area2);
 };
 

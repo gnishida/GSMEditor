@@ -23,7 +23,7 @@ public:
 	RoadGraph* view_roads;
 	//RoadGraph* generated_roads;
 	QVector2D center;
-	QList<RoadGraphDatabaseResult*> results;
+	QList<RoadGraphDatabaseResultPtr> results;
 
 	//QMap<RoadVertexDesc, BFSTree*> trees;
 

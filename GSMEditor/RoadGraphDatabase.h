@@ -21,7 +21,7 @@ public:
 	~RoadGraphDatabase();
 
 	void load(int type, const QString& filename);
-	void findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGraphDatabaseResult*>& results);
+	void findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGraphDatabaseResultPtr>& results);
 
 private:
 	void createTrees(RoadGraph* roads);

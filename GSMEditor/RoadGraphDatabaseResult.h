@@ -2,6 +2,7 @@
 
 #include "RoadGraph.h"
 #include <QVector2D>
+#include <boost/shared_ptr.hpp>
 
 class RoadGraphDatabaseResult {
 public:
@@ -23,3 +24,4 @@ public:
 	RoadGraph* instantiateRoads();
 };
 
+typedef boost::shared_ptr<RoadGraphDatabaseResult> RoadGraphDatabaseResultPtr;

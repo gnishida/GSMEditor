@@ -38,11 +38,11 @@ void RoadGraphDatabase::load(int type, const QString& filename) {
 /**
  * 当該道路網の中から、roads1に似た箇所を探し、トップN個をresultsに格納する。
  */
-void RoadGraphDatabase::findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGraphDatabaseResult*>& results) {
+void RoadGraphDatabase::findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGraphDatabaseResultPtr>& results) {
 	// clear the results
-	for (int i = 0; i < results.size(); i++) {
+	/*for (int i = 0; i < results.size(); i++) {
 		delete results[i];
-	}
+	}*/
 	results.clear();
 
 	TopNSearch<RoadVertexDesc> search;
@@ -107,7 +107,7 @@ void RoadGraphDatabase::findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGra
 		float rotation = computeRotationAngle(roads1, r2, map1);
 		//float rotation = computeRotationAngle(r2, roads1, map1);
 
-		results.push_back(new RoadGraphDatabaseResult(r2, roads, similarity, type, r2->graph[root2]->pt, rotation, translation));
+		results.push_back(RoadGraphDatabaseResultPtr(new RoadGraphDatabaseResult(r2, roads, similarity, type, r2->graph[root2]->pt, rotation, translation)));
 
 		// clear the "fullyPaired" flags
 		RoadEdgeIter ei, eend;

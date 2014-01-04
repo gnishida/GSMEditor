@@ -18,6 +18,13 @@ BBox::BBox(const QVector2D& pt) {
 	maxPt.setY(pt.y());
 }
 
+void BBox::reset() {
+	minPt.setX(FLT_MAX);
+	minPt.setY(FLT_MAX);
+	maxPt.setX(-FLT_MAX);
+	maxPt.setY(-FLT_MAX);
+}
+
 /**
  * update the bounding box by combining aother bounding box.
  *
@@ -42,6 +49,24 @@ void BBox::addPoint(const QVector2D& newPt) {
 
 	maxPt.setX(qMax(maxPt.x(), newPt.x()));
 	maxPt.setY(qMax(maxPt.y(), newPt.y()));
+}
+
+bool BBox::overlapsWithBBoxXY(const BBox& other) {
+	return  
+		( (this->minPt.x() <= other.maxPt.x()) && (this->maxPt.x() >= other.minPt.x()) ) &&
+		( (this->minPt.y() <= other.maxPt.y()) && (this->maxPt.y() >= other.minPt.y()) );					
+}
+
+QVector2D BBox::midPt() const {
+	return 0.5 * (minPt + maxPt);
+}
+
+float BBox::dx() const {
+	return maxPt.x() - minPt.x();
+}
+
+float BBox::dy() const {
+	return maxPt.y() - minPt.y();
 }
 
 void BBox::translate(float x, float y) {
@@ -94,6 +119,11 @@ bool BBox::hitTest(const QVector2D& pt) const {
 	*/
 
 	return contains(pt);
+}
+
+bool BBox::hitTestResizingPoint(const QVector2D& pt) const {
+	if (fabs(pt.x() - maxPt.x()) < dx() * 0.1f && fabs(pt.y() - minPt.y()) < dy() * 0.1f) return true;
+	else return false;
 }
 
 bool BBox::contains(const QVector2D &pt) const {
