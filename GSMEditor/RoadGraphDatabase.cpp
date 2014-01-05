@@ -60,14 +60,14 @@ void RoadGraphDatabase::findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGra
 	BFSTree* min_tree2;
 	for (QMap<RoadVertexDesc, BFSTree*>::iterator it = trees.begin(); it != trees.end(); ++it) {
 		BFSTree* tree2 = it.value();
-		if (it.key() == 195) {
+		if (it.key() == 803) {
 			int k = 0;
 		}
 
 		// Find the matching
 		QMap<RoadVertexDesc, RoadVertexDesc> map1;
 		QMap<RoadVertexDesc, RoadVertexDesc> map2;
-		GraphUtil::findCorrespondence(roads1, &tree1, roadsForSearch, tree2, false, 0.75f, map1, map2);
+		GraphUtil::findCorrespondence(roads1, &tree1, roadsForSearch, tree2, false, 1.0f, map1, map2);
 
 		// Compute the similarity
 		float similarity = GraphUtil::computeSimilarity(roads1, map1, roadsForSearch, map2, 1.0f, 1.0f, 1.0f);
@@ -105,14 +105,6 @@ void RoadGraphDatabase::findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGra
 
 		// rigid ICP
 		cv::Mat tansformMat = GraphUtil::rigidICP(r2, roads1, map2);
-		
-		/*
-		// define the offset
-		QVector2D translation = roads1->graph[root1]->pt - r2->graph[root2]->pt;
-
-		// define the angle
-		float rotation = computeRotationAngle(roads1, r2, map1);
-		*/
 
 		//results.push_back(RoadGraphDatabaseResultPtr(new RoadGraphDatabaseResult(r2, roads, similarity, type, r2->graph[root2]->pt, rotation, translation)));
 		results.push_back(RoadGraphDatabaseResultPtr(new RoadGraphDatabaseResult(r2, roads, similarity, type, roads1->graph[root1]->pt, tansformMat)));

@@ -3190,7 +3190,9 @@ float GraphUtil::computeSimilarity(RoadGraph* roads1, QMap<RoadVertexDesc, RoadV
 			if (len_ratio < 1.0f) len_ratio = 1.0f / len_ratio;
 			score += expf(1.0f - len_ratio) * w_length * 0.5f;
 
-			float len_ratio2 = (roads1->graph[src1]->pt - roads1->graph[tgt1]->pt).length() / (roads2->graph[src2]->pt - roads2->graph[tgt2]->pt).length();
+			float len1 = (roads1->graph[src1]->pt - roads1->graph[tgt1]->pt).length() + 0.1f;
+			float len2 = (roads2->graph[src2]->pt - roads2->graph[tgt2]->pt).length() + 0.1f;
+			float len_ratio2 = len1 / len2;
 			if (len_ratio2 < 1.0f) len_ratio2 = 1.0f / len_ratio2;
 			score += expf(1.0f - len_ratio2) * w_length * 0.5f;
 		}
@@ -3232,7 +3234,9 @@ float GraphUtil::computeSimilarity(RoadGraph* roads1, QMap<RoadVertexDesc, RoadV
 			if (len_ratio < 1.0f) len_ratio = 1.0f / len_ratio;
 			score += expf(1.0f - len_ratio) * w_length * 0.5f;
 
-			float len_ratio2 = (roads1->graph[src1]->pt - roads1->graph[tgt1]->pt).length() / (roads2->graph[src2]->pt - roads2->graph[tgt2]->pt).length();
+			float len1 = (roads1->graph[src1]->pt - roads1->graph[tgt1]->pt).length() + 0.1f;
+			float len2 = (roads2->graph[src2]->pt - roads2->graph[tgt2]->pt).length() + 0.1f;
+			float len_ratio2 = len1 / len2;
 			if (len_ratio2 < 1.0f) len_ratio2 = 1.0f / len_ratio2;
 			score += expf(1.0f - len_ratio2) * w_length * 0.5f;
 		}
