@@ -107,14 +107,6 @@ void RoadGraphEditor::openToAddRoad(const QString& filename) {
 	// update the bbox according to the loaded roads
 	selectedArea = BBoxPtr(new BBox(GraphUtil::getAABoundingBox(selectedRoads)));
 
-	// inflate the bbox a little so that all the vertices are completely within the bbox.
-	/*
-	((BBox*)selectedArea)->minPt.setX(((BBox*)selectedArea)->minPt.x() - selectedArea->dx() * 0.1f);
-	((BBox*)selectedArea)->minPt.setY(((BBox*)selectedArea)->minPt.y() - selectedArea->dy() * 0.1f);
-	((BBox*)selectedArea)->maxPt.setX(((BBox*)selectedArea)->maxPt.x() + selectedArea->dx() * 0.1f);
-	((BBox*)selectedArea)->maxPt.setY(((BBox*)selectedArea)->maxPt.y() + selectedArea->dy() * 0.1f);
-	*/
-
 	// backup the road graph
 	GraphUtil::copyRoads(roads, roadsOrig);
 	GraphUtil::copyRoads(selectedRoads, selectedRoadsOrig);
@@ -178,14 +170,6 @@ void RoadGraphEditor::paste() {
 	selectedArea = BBoxPtr(new BBox(GraphUtil::getAABoundingBox(selectedRoadsOrig)));
 
 	GraphUtil::copyRoads(selectedRoadsOrig, selectedRoads);
-
-	// inflate the bbox a little so that all the vertices are completely within the bbox.
-	/*
-	((BBox*)selectedArea)->minPt.setX(((BBox*)selectedArea)->minPt.x() - selectedArea->dx() * 0.1f);
-	((BBox*)selectedArea)->minPt.setY(((BBox*)selectedArea)->minPt.y() - selectedArea->dy() * 0.1f);
-	((BBox*)selectedArea)->maxPt.setX(((BBox*)selectedArea)->maxPt.x() + selectedArea->dx() * 0.1f);
-	((BBox*)selectedArea)->maxPt.setY(((BBox*)selectedArea)->maxPt.y() + selectedArea->dy() * 0.1f);
-	*/
 
 	mode = MODE_BASIC_AREA_SELECTED;
 }
@@ -620,9 +604,6 @@ void RoadGraphEditor::stopSketching(int type, int subtype, float simplify_thresh
 
 	if (mode == MODE_SKETCH_SKETCHING) {
 		// clear the shadow roads
-		/*for (int i = 0; i < shadowRoads.size(); i++) {
-			delete shadowRoads[i];
-		}*/
 		shadowRoads.clear();
 
 		QList<RoadGraphDatabaseResultPtr> results;
@@ -652,9 +633,6 @@ void RoadGraphEditor::instantiateShadowRoads() {
 	selectRoads(shadowRoads[0]->instantiateRoads());
 
 	// clear the shadow roads
-	/*for (int i = 0; i < shadowRoads.size(); i++) {
-		delete shadowRoads[i];
-	}*/
 	shadowRoads.clear();
 
 	// clear the sketch
@@ -696,6 +674,27 @@ void RoadGraphEditor::voronoiMerge2(const AbstractArea& area) {
 
 void RoadGraphEditor::voronoiMerge3() {
 	VoronoiUtil::merge3(roads, selectedRoads);
+}
+
+void RoadGraphEditor::icp() {
+	if (selectedRoads != NULL) delete selectedRoads;
+	selectedRoads = GraphUtil::createGridNetwork(300.0f, 4);
+
+	// Find the central vertex in the sketch
+	RoadVertexDesc root1 = 5;
+	RoadVertexDesc root2 = GraphUtil::getCentralVertex(&sketch);
+
+	// Create a tree
+	BFSTree tree1(selectedRoads, root1);
+	BFSTree tree2(&sketch, root2);
+
+	// Find the matching
+	QMap<RoadVertexDesc, RoadVertexDesc> map1;
+	QMap<RoadVertexDesc, RoadVertexDesc> map2;
+	GraphUtil::findCorrespondence(selectedRoads, &tree1, &sketch, &tree2, false, 0.75f, map1, map2);
+
+	cv::Mat transformMat = GraphUtil::rigidICP(selectedRoads, &sketch, map1);
+	GraphUtil::transform(selectedRoads, transformMat);
 }
 
 /**

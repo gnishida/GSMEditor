@@ -3,7 +3,7 @@
 #include "GraphUtil.h"
 #include "CircleArea.h"
 
-RoadGraphDatabaseResult::RoadGraphDatabaseResult(RoadGraph* roads, RoadGraph* orig_roads, float similarity, int type, const QVector2D& center, float rotation, const QVector2D& translation) {
+/*RoadGraphDatabaseResult::RoadGraphDatabaseResult(RoadGraph* roads, RoadGraph* orig_roads, float similarity, int type, const QVector2D& center, float rotation, const QVector2D& translation) {
 	this->roads = roads;
 	this->orig_roads = orig_roads;
 	this->similarity = similarity;
@@ -15,12 +15,25 @@ RoadGraphDatabaseResult::RoadGraphDatabaseResult(RoadGraph* roads, RoadGraph* or
 	// translation and rotation
 	GraphUtil::rotate(roads, -rotation, center);
 	GraphUtil::translate(roads, translation);
+}
+*/
 
+RoadGraphDatabaseResult::RoadGraphDatabaseResult(RoadGraph* roads, RoadGraph* orig_roads, float similarity, int type, const QVector2D& center, const cv::Mat& transformMat) {
+	this->roads = roads;
+	this->orig_roads = orig_roads;
+	this->similarity = similarity;
+	this->type = type;
+	this->center = center;
+	this->transformMat = transformMat;	
+
+	// translation and rotation
+	GraphUtil::transform(roads, transformMat);
 }
 
 RoadGraphDatabaseResult::~RoadGraphDatabaseResult() {
 }
 
+/*
 void RoadGraphDatabaseResult::generateMesh() {
 	if (!roads->modified) return;
 
@@ -54,6 +67,42 @@ void RoadGraphDatabaseResult::generateMesh() {
 
 	roads->modified = false;
 }
+*/
+
+void RoadGraphDatabaseResult::generateMesh() {
+	if (!roads->modified) return;
+
+	roads->renderables.clear();
+
+	// road edge
+	RoadEdgeIter ei, eend;
+	for (boost::tie(ei, eend) = boost::edges(roads->graph); ei != eend; ++ei) {
+		if (!roads->graph[*ei]->valid) continue;
+
+		RoadEdgePtr edge = roads->graph[*ei];
+
+		RoadVertexDesc src = boost::source(*ei, roads->graph);
+		RoadVertexDesc tgt = boost::target(*ei, roads->graph);
+
+		QColor color;
+		float ratio = ((roads->graph[src]->pt + roads->graph[tgt]->pt) / 2.0f - center).length() / 1000.0f;
+		if (ratio > 1.0f) ratio = 1.0f;
+		color.setRed((int)((233 - 148) * ratio + 148));
+		color.setGreen((int)((229 - 148) * ratio + 148));
+		color.setBlue((int)((220 - 148) * ratio + 148));
+		if (edge->fullyPaired) {
+			color = QColor(255, 0, 0);
+		}
+
+		RenderablePtr renderable = RenderablePtr(new Renderable(GL_LINE_STRIP, 1.0f));
+		addMeshFromEdge(renderable, edge, color, 0.0f);
+
+		roads->renderables.push_back(renderable);
+	}
+
+	roads->modified = false;
+}
+
 
 /**
  * Add a mesh for the specified edge.
@@ -81,6 +130,7 @@ void RoadGraphDatabaseResult::addMeshFromEdge(RenderablePtr renderable, RoadEdge
 	}
 }
 
+/*
 RoadGraph* RoadGraphDatabaseResult::instantiateRoads() {
 	RoadGraph* new_roads = GraphUtil::copyRoads(orig_roads);
 
@@ -93,6 +143,23 @@ RoadGraph* RoadGraphDatabaseResult::instantiateRoads() {
 		GraphUtil::extractRoads2(new_roads, area);
 	} else {
 		CircleArea area(center + translation, 800.0f);
+		GraphUtil::extractRoads2(new_roads, area);
+	}
+
+	return new_roads;
+}
+*/
+
+RoadGraph* RoadGraphDatabaseResult::instantiateRoads() {
+	RoadGraph* new_roads = GraphUtil::copyRoads(orig_roads);
+
+	GraphUtil::transform(new_roads, transformMat);
+
+	if (type == RoadGraphDatabase::TYPE_LARGE) {
+		CircleArea area(center, 2400.0f);
+		GraphUtil::extractRoads2(new_roads, area);
+	} else {
+		CircleArea area(center, 800.0f);
 		GraphUtil::extractRoads2(new_roads, area);
 	}
 

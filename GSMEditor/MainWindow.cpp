@@ -75,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags) : QMainWindow(parent, 
 	connect(ui.actionDeleteEdge, SIGNAL(triggered()), this, SLOT(onDeleteEdge()));
 	connect(ui.actionVoronoi, SIGNAL(triggered()), this, SLOT(onVoronoi()));
 	connect(ui.actionShowArea, SIGNAL(triggered()), this, SLOT(onShowArea()));
+	connect(ui.actionICP, SIGNAL(triggered()), this, SLOT(onICP()));
 	connect(ui.actionControlWidget, SIGNAL(triggered()), this, SLOT(onShowControlWidget()));
 	connect(ui.actionLargeRoadDatabase, SIGNAL(triggered()), this, SLOT(onLargeRoadDatabase()));
 
@@ -234,6 +235,11 @@ void MainWindow::onVoronoi() {
 
 void MainWindow::onVoronoiCut() {
 	glWidget->editor->voronoiMerge2();
+}
+
+void MainWindow::onICP() {
+	glWidget->editor->icp();
+	glWidget->updateGL();
 }
 
 void MainWindow::onShowArea() {

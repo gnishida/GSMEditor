@@ -66,6 +66,7 @@
     </property>
     <addaction name="actionVoronoi"/>
     <addaction name="actionShowArea"/>
+    <addaction name="actionICP"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -246,6 +247,11 @@
   <action name="actionLargeRoadDatabase">
    <property name="text">
     <string>Large Road Database</string>
+   </property>
+  </action>
+  <action name="actionICP">
+   <property name="text">
+    <string>ICP</string>
    </property>
   </action>
  </widget>

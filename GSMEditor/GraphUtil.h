@@ -158,6 +158,8 @@ public:
 
 	// ICP
 	static void rigidICP(RoadGraph* roads1, RoadGraph* roads2, QList<EdgePair>& pairs);
+	static cv::Mat rigidICP(RoadGraph* roads1, RoadGraph* roads2, QMap<RoadVertexDesc, RoadVertexDesc>& map);
+	static void transform(RoadGraph* roads, const cv::Mat& transformMat);
 	static cv::Mat convertVerticesToCVMatrix(RoadGraph* roads, bool onlyValidVertex = true);
 	static cv::Mat convertEdgesToCVMatrix(RoadGraph* roads, bool onlyValidVertex = true);
 

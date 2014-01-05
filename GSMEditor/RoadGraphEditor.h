@@ -135,6 +135,9 @@ public:
 	void voronoiMerge2(const AbstractArea& area);
 	void voronoiMerge3();
 
+	// ICP
+	void icp();
+
 	// Simple connect
 	void simpleConnect();
 };

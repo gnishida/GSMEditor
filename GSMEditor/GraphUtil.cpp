@@ -1,9 +1,9 @@
 ﻿#include "GraphUtil.h"
 #include "Util.h"
 #include "BFSForest.h"
-#include <qlist.h>
-#include <qmatrix.h>
-#include <qdebug.h>
+#include <QList>
+#include <QSet>
+#include <QDebug>
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/linestring.hpp>
@@ -3155,6 +3155,7 @@ float GraphUtil::computeSimilarity(RoadGraph* roads1, QMap<RoadVertexDesc, RoadV
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// For each edge of the 1st road graph, if there is a corresponding edge, increase the score.
+	QList<RoadEdgeDesc> roads2UsedEdges;
 	RoadEdgeIter ei, eend;
 	for (boost::tie(ei, eend) = boost::edges(roads1->graph); ei != eend; ++ei) {
 		if (!roads1->graph[*ei]->valid) continue;
@@ -3168,31 +3169,36 @@ float GraphUtil::computeSimilarity(RoadGraph* roads1, QMap<RoadVertexDesc, RoadV
 
 			if (!hasEdge(roads2, src2, tgt2)) continue;
 
+			RoadEdgeDesc e2 = getEdge(roads2, src2, tgt2);
+			if (roads2UsedEdges.contains(e2)) continue;
+			roads2UsedEdges.push_back(e2);
+
 			// increase the score
 			score += w_connectivity;
 
 			// increase the score according to the difference in the angle of the edges.
-			/*float angle_ratio = (M_PI / 2.0f - diffAngle(roads1->graph[tgt1]->pt - roads1->graph[src1]->pt, roads2->graph[tgt2]->pt - roads2->graph[src2]->pt)) / M_PI * 2.0f;
-			if (angle_ratio > 0.0f) {
-				score += angle_ratio * w_angle;
-			}*/
-			float angle_diff = diffAngle(roads1->graph[tgt1]->pt - roads1->graph[src1]->pt, roads2->graph[tgt2]->pt - roads2->graph[src2]->pt);
-			score += expf(-angle_diff) * w_angle;
+			//float angle_diff = diffAngle(roads1->graph[tgt1]->pt - roads1->graph[src1]->pt, roads2->graph[tgt2]->pt - roads2->graph[src2]->pt);
+			std::vector<QVector2D> polyLine1 = getOrderedPolyLine(roads1, *ei);
+			std::vector<QVector2D> polyLine2 = getOrderedPolyLine(roads2, e2);
+			float angle_diff1 = diffAngle(polyLine1[1] - polyLine1[0], polyLine2[1] - polyLine2[0]);
+			score += expf(-angle_diff1) * w_angle * 0.5f;
+			float angle_diff2 = diffAngle(polyLine1[polyLine1.size() - 1] - polyLine1[polyLine1.size() - 2], polyLine2[polyLine2.size() - 1] - polyLine2[polyLine2.size() - 2]);
+			score += expf(-angle_diff2) * w_angle * 0.5f;
 
 			// increase the score according to the length of the edges
-			RoadEdgeDesc e2 = getEdge(roads2, src2, tgt2);
 			float len_ratio = roads1->graph[*ei]->getLength() / roads2->graph[e2]->getLength();
-			/*
-			if (len_ratio > 0.3333f && len_ratio < 3.0f) {
-				score += w_length;
-			}*/
 			if (len_ratio < 1.0f) len_ratio = 1.0f / len_ratio;
-			score += expf(1.0f - len_ratio) * w_length;
+			score += expf(1.0f - len_ratio) * w_length * 0.5f;
+
+			float len_ratio2 = (roads1->graph[src1]->pt - roads1->graph[tgt1]->pt).length() / (roads2->graph[src2]->pt - roads2->graph[tgt2]->pt).length();
+			if (len_ratio2 < 1.0f) len_ratio2 = 1.0f / len_ratio2;
+			score += expf(1.0f - len_ratio2) * w_length * 0.5f;
 		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// For each edge of the 2nd road graph, if there is a corresponding edge, increase the score.
+	QList<RoadEdgeDesc> roads1UsedEdges;
 	for (boost::tie(ei, eend) = boost::edges(roads2->graph); ei != eend; ++ei) {
 		if (!roads2->graph[*ei]->valid) continue;
 
@@ -3205,29 +3211,30 @@ float GraphUtil::computeSimilarity(RoadGraph* roads1, QMap<RoadVertexDesc, RoadV
 
 			if (!hasEdge(roads1, src1, tgt1)) continue;
 
+			RoadEdgeDesc e1 = getEdge(roads1, src1, tgt1);
+			if (roads1UsedEdges.contains(e1)) continue;
+			roads1UsedEdges.push_back(e1);
+
 			// increase the score
 			score += w_connectivity;
 
 			// increase the score according to the difference in the angle of the edges.
-			/*
-			float angle_ratio = (M_PI / 2.0f - diffAngle(roads1->graph[tgt1]->pt - roads1->graph[src1]->pt, roads2->graph[tgt2]->pt - roads2->graph[src2]->pt)) / M_PI * 2.0f;
-			if (angle_ratio > 0.0f) {
-				score += angle_ratio * w_angle;
-			}
-			*/
-			float angle_diff = diffAngle(roads1->graph[tgt1]->pt - roads1->graph[src1]->pt, roads2->graph[tgt2]->pt - roads2->graph[src2]->pt);
-			score += expf(-angle_diff) * w_angle;
+			//float angle_diff = diffAngle(roads1->graph[tgt1]->pt - roads1->graph[src1]->pt, roads2->graph[tgt2]->pt - roads2->graph[src2]->pt);
+			std::vector<QVector2D> polyLine1 = getOrderedPolyLine(roads1, e1);
+			std::vector<QVector2D> polyLine2 = getOrderedPolyLine(roads2, *ei);
+			float angle_diff1 = diffAngle(polyLine1[1] - polyLine1[0], polyLine2[1] - polyLine2[0]);
+			score += expf(-angle_diff1) * w_angle * 0.5f;
+			float angle_diff2 = diffAngle(polyLine1[polyLine1.size() - 1] - polyLine1[polyLine1.size() - 2], polyLine2[polyLine2.size() - 1] - polyLine2[polyLine2.size() - 2]);
+			score += expf(-angle_diff2) * w_angle * 0.5f;
 
 			// increase the score according to the length of the edges
-			RoadEdgeDesc e1 = getEdge(roads1, src1, tgt1);
 			float len_ratio = roads1->graph[e1]->getLength() / roads2->graph[*ei]->getLength();
-			/*
-			if (len_ratio > 0.3333f && len_ratio < 3.0f) {
-				score += w_length;
-			}
-			*/
 			if (len_ratio < 1.0f) len_ratio = 1.0f / len_ratio;
-			score += expf(1.0f - len_ratio) * w_length;
+			score += expf(1.0f - len_ratio) * w_length * 0.5f;
+
+			float len_ratio2 = (roads1->graph[src1]->pt - roads1->graph[tgt1]->pt).length() / (roads2->graph[src2]->pt - roads2->graph[tgt2]->pt).length();
+			if (len_ratio2 < 1.0f) len_ratio2 = 1.0f / len_ratio2;
+			score += expf(1.0f - len_ratio2) * w_length * 0.5f;
 		}
 	}
 
@@ -3803,6 +3810,7 @@ QList<EdgePair> GraphUtil::getClosestEdgePairs(RoadGraph* roads1, RoadGraph* roa
 
 /**
  * Apply the global rigid ICP in order to fit the 1st road graph to the 2nd road graph in the least square manner.
+ * As a result, roads1 will be updated to best fit roads2.
  */
 void GraphUtil::rigidICP(RoadGraph* roads1, RoadGraph* roads2, QList<EdgePair>& pairs) {
 	cv::Mat src(pairs.size() * 2, 2, CV_32FC2);
@@ -3863,6 +3871,127 @@ void GraphUtil::rigidICP(RoadGraph* roads1, RoadGraph* roads2, QList<EdgePair>& 
 		for (int i = 0; i < roads1->graph[*ei]->polyLine.size(); i++) {
 			roads1->graph[*ei]->polyLine[i].setX(src2.at<float>(count, 0));
 			roads1->graph[*ei]->polyLine[i].setY(src2.at<float>(count, 1));
+			count++;
+		}
+	}
+}
+
+/**
+ * Apply the global rigid ICP in order to fit the 1st road graph to the 2nd road graph in the least square manner.
+ * As a result, roads1 will be updated to best fit roads2.
+ * Originally, I used cv::estimateRigidTransform, but this function does not work well in some cases.
+ * Therefore, I decided to implement simple function in my own way.
+ */
+/*cv::Mat GraphUtil::rigidICP(RoadGraph* roads1, RoadGraph* roads2, QMap<RoadVertexDesc, RoadVertexDesc>& map) {
+	cv::Mat src(map.size(), 2, CV_32FC1);
+	cv::Mat dst(map.size(), 2, CV_32FC1);
+
+	int count = 0;
+	for (QMap<RoadVertexDesc, RoadVertexDesc>::iterator it = map.begin(); it != map.end(); ++it, ++count) {
+		RoadVertexDesc v1 = it.key();
+		RoadVertexDesc v2 = it.value();
+
+		src.at<float>(count, 0) = roads1->graph[v1]->pt.x();
+		src.at<float>(count, 1) = roads1->graph[v1]->pt.y();
+		dst.at<float>(count, 0) = roads2->graph[v2]->pt.x();
+		dst.at<float>(count, 1) = roads2->graph[v2]->pt.y();
+	}
+
+	// Rigid ICP 変換行列を計算
+	cv::Mat transformMat = cv::estimateRigidTransform(src.reshape(2), dst.reshape(2), false);
+
+	return transformMat;
+}
+*/
+cv::Mat GraphUtil::rigidICP(RoadGraph* roads1, RoadGraph* roads2, QMap<RoadVertexDesc, RoadVertexDesc>& map) {
+	QVector2D center1, center2;
+
+	int count = 0;
+	RoadVertexIter vi, vend;
+	for (boost::tie(vi, vend) = boost::vertices(roads1->graph); vi != vend; ++vi) {
+		if (!map.contains(*vi)) continue;
+
+		RoadVertexDesc v2 = map[*vi];
+		center1 += roads1->graph[*vi]->pt;
+		center2 += roads2->graph[v2]->pt;
+		count++;
+	}
+	center1 /= (float)count;
+	center2 /= (float)count;
+
+	float angle = 0.0f;
+	count = 0;
+	RoadEdgeIter ei, eend;
+	for (boost::tie(ei, eend) = boost::edges(roads1->graph); ei != eend; ++ei) {
+		if (!roads1->graph[*ei]->valid) continue;
+
+		RoadVertexDesc src1 = boost::source(*ei, roads1->graph);
+		RoadVertexDesc tgt1 = boost::target(*ei, roads1->graph);
+
+		if (!map.contains(src1) || !map.contains(tgt1)) continue;
+
+		RoadVertexDesc src2 = map[src1];
+		RoadVertexDesc tgt2 = map[tgt1];
+
+		angle += GraphUtil::diffAngle(roads2->graph[src2]->pt - roads2->graph[tgt2]->pt, roads1->graph[src1]->pt - roads1->graph[tgt1]->pt, false);
+		count++;
+	}
+
+	angle /= (float)count;
+
+	// Rigid ICP 変換行列を計算
+	cv::Mat transformMat1 = cv::Mat::eye(3, 3, CV_64FC1);
+	transformMat1.at<double>(0, 2) = center2.x();
+	transformMat1.at<double>(1, 2) = center2.y();
+	cv::Mat transformMat2 = cv::Mat::eye(3, 3, CV_64FC1);
+	transformMat2.at<double>(0, 0) = cos(angle);
+	transformMat2.at<double>(0, 1) = -sin(angle);
+	transformMat2.at<double>(1, 0) = sin(angle);
+	transformMat2.at<double>(1, 1) = cos(angle);
+	cv::Mat transformMat3 = cv::Mat::eye(3, 3, CV_64FC1);
+	transformMat3.at<double>(0, 2) = -center1.x();
+	transformMat3.at<double>(1, 2) = -center1.y();
+
+	transformMat1 = transformMat1 * transformMat2 * transformMat3;
+
+	cv::Mat transformMat(3, 3, CV_64FC1);
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 3; j++) {
+			transformMat.at<double>(i, j) = transformMat1.at<double>(i, j);
+		}
+	}
+
+	std::cout << transformMat << endl;
+
+	return transformMat;
+}
+
+void GraphUtil::transform(RoadGraph* roads, const cv::Mat& transformMat) {
+	// 道路網１の頂点座標を、変換行列を使って更新
+	cv::Mat src = convertVerticesToCVMatrix(roads, false);
+	cv::Mat src2;
+	cv::transform(src, src2, transformMat);
+
+	// 道路網１の頂点座標を実際に更新する
+	RoadVertexIter vi, vend;
+	int count = 0;
+	for (boost::tie(vi, vend) = boost::vertices(roads->graph); vi != vend; ++vi) {
+		roads->graph[*vi]->pt.setX(src2.at<float>(count, 0));
+		roads->graph[*vi]->pt.setY(src2.at<float>(count, 1));
+		count++;
+	}
+
+	// 道路網１のエッジの座標も更新する
+	src = convertEdgesToCVMatrix(roads, false);
+	cv::transform(src, src2, transformMat);
+
+	// 道路網１のエッジ座標を実際に更新する
+	RoadEdgeIter ei, eend;
+	count = 0;
+	for (boost::tie(ei, eend) = boost::edges(roads->graph); ei != eend; ++ei) {
+		for (int i = 0; i < roads->graph[*ei]->polyLine.size(); i++) {
+			roads->graph[*ei]->polyLine[i].setX(src2.at<float>(count, 0));
+			roads->graph[*ei]->polyLine[i].setY(src2.at<float>(count, 1));
 			count++;
 		}
 	}

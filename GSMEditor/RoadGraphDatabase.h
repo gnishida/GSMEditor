@@ -26,6 +26,5 @@ public:
 private:
 	void createTrees(RoadGraph* roads);
 	void clearTrees();
-	float computeRotationAngle(RoadGraph* roads1, RoadGraph* roads2, QMap<RoadVertexDesc, RoadVertexDesc>& map);
 };
 

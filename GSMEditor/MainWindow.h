@@ -56,6 +56,7 @@ public slots:
 	void onVoronoi();
 	void onVoronoiCut();
 	void onShowArea();
+	void onICP();
 	void onShowControlWidget();
 	void onLargeRoadDatabase();
 };

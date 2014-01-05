@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'MainWindow.ui'
 **
-** Created: Sat Jan 4 12:18:40 2014
+** Created: Sat Jan 4 16:20:35 2014
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -45,6 +45,7 @@ public:
     QAction *actionShowArea;
     QAction *actionControlWidget;
     QAction *actionLargeRoadDatabase;
+    QAction *actionICP;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
@@ -124,6 +125,8 @@ public:
         actionControlWidget->setObjectName(QString::fromUtf8("actionControlWidget"));
         actionLargeRoadDatabase = new QAction(MainWindow);
         actionLargeRoadDatabase->setObjectName(QString::fromUtf8("actionLargeRoadDatabase"));
+        actionICP = new QAction(MainWindow);
+        actionICP->setObjectName(QString::fromUtf8("actionICP"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
@@ -175,6 +178,7 @@ public:
         menuEdit->addAction(actionDeleteEdge);
         menuTool->addAction(actionVoronoi);
         menuTool->addAction(actionShowArea);
+        menuTool->addAction(actionICP);
         menuWindow->addAction(actionControlWidget);
         menuWindow->addAction(actionLargeRoadDatabase);
 
@@ -213,6 +217,7 @@ public:
         actionShowArea->setText(QApplication::translate("MainWindow", "Show Area", 0, QApplication::UnicodeUTF8));
         actionControlWidget->setText(QApplication::translate("MainWindow", "Control Widget", 0, QApplication::UnicodeUTF8));
         actionLargeRoadDatabase->setText(QApplication::translate("MainWindow", "Large Road Database", 0, QApplication::UnicodeUTF8));
+        actionICP->setText(QApplication::translate("MainWindow", "ICP", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuMode->setTitle(QApplication::translate("MainWindow", "Mode", 0, QApplication::UnicodeUTF8));
         menuSelect->setTitle(QApplication::translate("MainWindow", "Select", 0, QApplication::UnicodeUTF8));

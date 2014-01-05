@@ -60,6 +60,9 @@ void RoadGraphDatabase::findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGra
 	BFSTree* min_tree2;
 	for (QMap<RoadVertexDesc, BFSTree*>::iterator it = trees.begin(); it != trees.end(); ++it) {
 		BFSTree* tree2 = it.value();
+		if (it.key() == 195) {
+			int k = 0;
+		}
 
 		// Find the matching
 		QMap<RoadVertexDesc, RoadVertexDesc> map1;
@@ -99,15 +102,20 @@ void RoadGraphDatabase::findSimilarRoads(RoadGraph* roads1, int N, QList<RoadGra
 		GraphUtil::findCorrespondence(roads1, &tree1, r2, tree2, false, 0.75f, map1, map2);
 
 		float similarity = GraphUtil::computeSimilarity(roads1, map1, r2, map2, 1.0f, 1.0f, 1.0f);
+
+		// rigid ICP
+		cv::Mat tansformMat = GraphUtil::rigidICP(r2, roads1, map2);
 		
+		/*
 		// define the offset
 		QVector2D translation = roads1->graph[root1]->pt - r2->graph[root2]->pt;
 
 		// define the angle
 		float rotation = computeRotationAngle(roads1, r2, map1);
-		//float rotation = computeRotationAngle(r2, roads1, map1);
+		*/
 
-		results.push_back(RoadGraphDatabaseResultPtr(new RoadGraphDatabaseResult(r2, roads, similarity, type, r2->graph[root2]->pt, rotation, translation)));
+		//results.push_back(RoadGraphDatabaseResultPtr(new RoadGraphDatabaseResult(r2, roads, similarity, type, r2->graph[root2]->pt, rotation, translation)));
+		results.push_back(RoadGraphDatabaseResultPtr(new RoadGraphDatabaseResult(r2, roads, similarity, type, roads1->graph[root1]->pt, tansformMat)));
 
 		// clear the "fullyPaired" flags
 		RoadEdgeIter ei, eend;
@@ -141,24 +149,3 @@ void RoadGraphDatabase::clearTrees() {
 	}
 }
 
-float RoadGraphDatabase::computeRotationAngle(RoadGraph* roads1, RoadGraph* roads2, QMap<RoadVertexDesc, RoadVertexDesc>& map) {
-	float total_angle = 0.0f;
-	int count = 0;
-
-	RoadEdgeIter ei, eend;
-	for (boost::tie(ei, eend) = boost::edges(roads1->graph); ei != eend; ++ei) {
-		if (!roads1->graph[*ei]->valid) continue;
-		if (!roads1->graph[*ei]->fullyPaired) continue;
-
-		RoadVertexDesc src1 = boost::source(*ei, roads1->graph);
-		RoadVertexDesc tgt1 = boost::target(*ei, roads1->graph);
-
-		RoadVertexDesc src2 = map[src1];
-		RoadVertexDesc tgt2 = map[tgt1];
-
-		total_angle += GraphUtil::diffAngle(roads2->graph[src2]->pt - roads2->graph[tgt2]->pt, roads1->graph[src1]->pt - roads1->graph[tgt1]->pt, false);
-		count++;
-	}
-
-	return total_angle / (float)count;
-}
